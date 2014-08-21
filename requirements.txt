@@ -1,3 +1,5 @@
 django
 lxml
 requests
+psycopg2
+raven==4.2.3

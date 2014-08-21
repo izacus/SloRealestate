@@ -74,7 +74,7 @@ class Command(BaseCommand):
                 building_type = BUILDING_TYPES[3][0]
             elif building_type_string == u"Garaža":
                 building_type = BUILDING_TYPES[4][0]
-            elif building_type_string == u"Počitniški objekt":
+            elif building_type_string == u"Počitniški objekt" or building_type_string == u"Vikend":
                 building_type = BUILDING_TYPES[5][0]
 
             if building_type is None:
