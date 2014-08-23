@@ -34,12 +34,6 @@ BUILDING_TYPES = (
     (5, "VIKEND")
 )
 
-class AdPicture(models.Model):
-    """
-    Represents a picture for the Ad
-    """
-    picture_url = models.URLField(max_length=255)
-
 
 # Create your models here.
 class EstateAd(models.Model):
@@ -54,7 +48,6 @@ class EstateAd(models.Model):
     # Minimum required details
     title = models.CharField(max_length=255)
     link = models.URLField(max_length=255)
-    thumbnail = models.OneToOneField(AdPicture, related_name="thumb_ad", null=True, on_delete=models.CASCADE)
     short_description = models.TextField(blank=True, null=False, default="")
     author_name = models.CharField(max_length=255, null=False, blank=True, default="")
     publish_date = models.DateTimeField()
@@ -67,9 +60,9 @@ class EstateAd(models.Model):
     floor = models.CharField(max_length=8, blank=True, null=False, default="")
 
     # Additional information
-    pictures = models.ForeignKey(AdPicture, related_name="ad", null=True, on_delete=models.CASCADE)
     description = models.TextField(blank=True, null=False, default="")
     administrative_unit = models.CharField(max_length=255, blank=True, null=False, default="")
+    county = models.CharField(max_length=255, blank=True, null=False, default="")
 
     # Raw recordings for possible re-parse
     raw_data = models.TextField()
@@ -78,3 +71,11 @@ class EstateAd(models.Model):
 
     def __unicode__(self):
         return u"[%s] -> %s" % (self.ad_id, self.title, )
+
+
+class AdPicture(models.Model):
+    """
+    Represents a picture for the Ad
+    """
+    picture_url = models.URLField(max_length=255)
+    ad = models.ForeignKey(EstateAd, null=True)

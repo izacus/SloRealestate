@@ -3,7 +3,7 @@ from models import EstateAd, AdPicture
 
 
 class EstateAdAdmin(admin.ModelAdmin):
-    list_display = ('title', 'id', 'region', 'type', 'size_m2', 'price')
+    list_display = ('title', 'id', 'region', 'type', 'size_m2', 'price', 'publish_date')
     list_filter = ('region', 'type', 'building_type')
 
 

@@ -2,7 +2,6 @@
 
 from Queue import Queue
 import json
-import sys
 from django.core.management import BaseCommand
 from django.db import IntegrityError
 from django.utils import timezone
@@ -11,9 +10,10 @@ from estate_ads.models import EstateAd, AdPicture
 from estate_ads.models import REGIONS
 from estate_ads.models import AD_TYPES
 from estate_ads.models import BUILDING_TYPES
-import requests
+
+import _tasks
 import locale
-import requests_cache
+from estate_ads.utils import get_site
 
 BASE_URL = "http://www.nepremicnine.net"
 TOP_SITE_URL = BASE_URL + "/nepremicnine.html?last=1"
@@ -21,32 +21,18 @@ TOP_SITE_URL = BASE_URL + "/nepremicnine.html?last=1"
 # For number parsing
 locale.setlocale(locale.LC_NUMERIC, "sl_SI")
 
-requests_cache.install_cache('parse_cache')
-requests_session = requests.Session()
-
-# Proxy detection is broken on OS X 10.9 in python currently causing the process to hang
-# Hence we disable all proxy detection code in Requests and urllib2-related calls here
-if sys.platform == "darwin":
-    requests_session.trust_env = False
-
-def get_site(url):
-    if sys.platform == "darwin":
-        response = requests_session.get(url, proxies={})
-    else:
-        response = requests_session.get(url)
-    response.encoding = response.apparent_encoding
-    return response.text
-
 
 class Command(BaseCommand):
     """
     Parses last 24 hours of ads on the site
     """
 
-    def parse_float(self, number_string):
+    @staticmethod
+    def parse_float(number_string):
         return locale.atof(number_string.strip().replace('.', ''))
 
-    def parse_type(self, raw_data):
+    @staticmethod
+    def parse_type(raw_data):
         ad_type = None
         building_type = None
 
@@ -103,7 +89,7 @@ class Command(BaseCommand):
             try:
                 price_m2_num = self.parse_float(price[:price.find(u"\u20ac/m2")])
             except ValueError:
-                return (None, None)
+                return None, None
 
             price_num = None
             if size is not None:
@@ -120,7 +106,6 @@ class Command(BaseCommand):
             return price_num, price_m2_num
 
         return None, None
-
 
     def parse_year(self, raw_data):
         if not "leto" in raw_data or raw_data["leto"] is None:
@@ -155,11 +140,6 @@ class Command(BaseCommand):
                     ad.title = raw_ad.xpath('div[@class="teksti_container"]/h2/a')[0].text
                     ad.link = BASE_URL + raw_ad.xpath('div[@class="teksti_container"]/h2/a')[0].attrib["href"]
 
-                    thumbnail_url = raw_ad.xpath('div[@class="slika"]/a/img')[0].attrib["src"]
-                    if thumbnail_url and not thumbnail_url.startswith('/images/n-'): # N-something are placeholders
-                        ad.thumbnail = AdPicture(picture_url=thumbnail_url)
-                        ad.thumbnail.save()
-
                     data = raw_ad.xpath('div[@class="teksti_container"]/div[@class="main-data"]/span')
 
                     raw_data = {}
@@ -191,6 +171,8 @@ class Command(BaseCommand):
                     except IntegrityError as e:
                         print e
                         print "Ad with id %s already exists in database!" % (ad.ad_id, )
+
+                    _tasks.read_ad_details(ad.pk)
 
                 # Grab next page link
                 try:
