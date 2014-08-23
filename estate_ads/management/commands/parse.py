@@ -7,12 +7,13 @@ from django.core.management import BaseCommand
 from django.db import IntegrityError
 from django.utils import timezone
 from lxml import etree
-from estate_ads.models import EstateAd
+from estate_ads.models import EstateAd, AdPicture
 from estate_ads.models import REGIONS
 from estate_ads.models import AD_TYPES
 from estate_ads.models import BUILDING_TYPES
 import requests
 import locale
+import requests_cache
 
 BASE_URL = "http://www.nepremicnine.net"
 TOP_SITE_URL = BASE_URL + "/nepremicnine.html?last=1"
@@ -20,6 +21,7 @@ TOP_SITE_URL = BASE_URL + "/nepremicnine.html?last=1"
 # For number parsing
 locale.setlocale(locale.LC_NUMERIC, "sl_SI")
 
+requests_cache.install_cache('parse_cache')
 requests_session = requests.Session()
 
 # Proxy detection is broken on OS X 10.9 in python currently causing the process to hang
@@ -153,7 +155,10 @@ class Command(BaseCommand):
                     ad.title = raw_ad.xpath('div[@class="teksti_container"]/h2/a')[0].text
                     ad.link = BASE_URL + raw_ad.xpath('div[@class="teksti_container"]/h2/a')[0].attrib["href"]
 
-                    ad.picture = raw_ad.xpath('div[@class="slika"]/a/img')[0].attrib["src"]
+                    thumbnail_url = raw_ad.xpath('div[@class="slika"]/a/img')[0].attrib["src"]
+                    if thumbnail_url and not thumbnail_url.startswith('/images/n-'): # N-something are placeholders
+                        ad.thumbnail = AdPicture(picture_url=thumbnail_url)
+                        ad.thumbnail.save()
 
                     data = raw_ad.xpath('div[@class="teksti_container"]/div[@class="main-data"]/span')
 
@@ -175,7 +180,7 @@ class Command(BaseCommand):
                     ad.price, ad.price_m2 = self.parse_price(raw_data, ad.size_m2)
 
                     ad.year_built = self.parse_year(raw_data)
-                    ad.floor = raw_data.get("nadstropje", None)
+                    ad.floor = raw_data.get("nadstropje", "")
 
                     ad.short_description = raw_ad.xpath('div[@class="teksti_container"]/div[@class="kratek"]')[0].text
                     ad.author_name = raw_ad.xpath('div[@class="teksti_container"]/div[@class="povezave"]/div')[0].attrib["title"]

@@ -34,21 +34,29 @@ BUILDING_TYPES = (
     (5, "VIKEND")
 )
 
+class AdPicture(models.Model):
+    """
+    Represents a picture for the Ad
+    """
+    picture_url = models.URLField(max_length=255)
+
 
 # Create your models here.
 class EstateAd(models.Model):
+    """
+    Represents a single Ad with all information related
+    """
     ad_id = models.CharField(unique=True, max_length=255, db_index=True)
     region = models.IntegerField(choices=REGIONS, db_index=True)
     type = models.IntegerField(choices=AD_TYPES, null=True, db_index=True)
     building_type = models.IntegerField(choices=BUILDING_TYPES, null=True, db_index=True)
 
+    # Minimum required details
     title = models.CharField(max_length=255)
     link = models.URLField(max_length=255)
-    picture = models.URLField(max_length=255, null=True)
-
-    short_description = models.TextField(null=True)
-    author_name = models.CharField(max_length=255, null=True)
-
+    thumbnail = models.OneToOneField(AdPicture, related_name="thumb_ad", null=True, on_delete=models.CASCADE)
+    short_description = models.TextField(blank=True, null=False, default="")
+    author_name = models.CharField(max_length=255, null=False, blank=True, default="")
     publish_date = models.DateTimeField()
 
     # These fields may not parse properly
@@ -56,11 +64,17 @@ class EstateAd(models.Model):
     price_m2 = models.FloatField(null=True)
     price = models.FloatField(null=True)
     year_built = models.IntegerField(null=True)
-    floor = models.CharField(max_length=8, null=True)
+    floor = models.CharField(max_length=8, blank=True, null=False, default="")
+
+    # Additional information
+    pictures = models.ForeignKey(AdPicture, related_name="ad", null=True, on_delete=models.CASCADE)
+    description = models.TextField(blank=True, null=False, default="")
+    administrative_unit = models.CharField(max_length=255, blank=True, null=False, default="")
 
     # Raw recordings for possible re-parse
     raw_data = models.TextField()
     raw_html = models.TextField()
+    raw_detail_html = models.TextField(blank=True, null=False, default="")
 
     def __unicode__(self):
         return u"[%s] -> %s" % (self.ad_id, self.title, )
