@@ -1,6 +1,8 @@
 from django.contrib import admin
-
-# Register your models here.
 from models import EstateAd
 
-admin.site.register(EstateAd)
+class EstateAdAdmin(admin.ModelAdmin):
+	list_display = ('title', 'id', 'region', 'type', 'size_m2', 'price')
+	list_filter = ('region', 'type', 'building_type')
+
+admin.site.register(EstateAd, EstateAdAdmin)
