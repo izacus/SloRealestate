@@ -1,8 +1,10 @@
 import sys
 import requests
 import requests_cache
+import si_estate.settings
 
-requests_cache.install_cache('parse_cache')
+if si_estate.settings.DEBUG:        # Don't enable in production
+    requests_cache.install_cache('parse_cache')
 requests_session = requests.Session()
 
 # Proxy detection is broken on OS X 10.9 in python currently causing the process to hang
