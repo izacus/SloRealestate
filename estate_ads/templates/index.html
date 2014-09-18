@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% load humanize %}
+{% block content %}
+
+        <h2>Oglasi</h2> <br/>
+
+        {% for ad in ads %}
+            <h4 class=".row">{{ ad.title }}</h4>
+            <div class=".row">
+                <span class="label label-danger">{{ ad.size_m2 }} m2</span>
+                <span class="label label-primary">{{ ad.price|intcomma }} EUR</span>
+                <span class="label label-info">{{ ad.year_built|default_if_none:'' }}</span>
+                <span class="label label-success">{{ ad.administrative_unit }}</span>
+            </div>
+            <br />
+            <p class=".row lead">{{ ad.short_description }}</p>
+            <p class=".row .col-md-12">{{ ad.description }}</p>
+
+            <div class=".row"
+            {% for picture in ad.adpicture_set.all %}
+                <a href="{{ picture.picture_url }}" target="_blank"><img class="img-responsive img-thumbnail" style="width: 180px;" src="{{ picture.picture_url }}" /></a>
+            {% endfor %}
+            </div>
+            <br />
+            <div class=".row"><h6>{{ ad.author_name }}</h6></div>
+            <hr />
+        {% endfor %}
+
+{% endblock %}
