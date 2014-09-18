@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta, time
+import datetime
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.shortcuts import render
 
@@ -7,7 +7,11 @@ from models import EstateAd, AD_TYPES, REGIONS, BUILDING_TYPES
 
 
 def index_view(request):
-    ads_query = EstateAd.objects
+    date = datetime.date.today()
+    start_week = date - datetime.timedelta(date.weekday())
+    end_week = start_week + datetime.timedelta(7)
+
+    ads_query = EstateAd.objects.filter(publish_date__range=[start_week, end_week])
 
     type = None
     if request.GET.get("t") is not None:
