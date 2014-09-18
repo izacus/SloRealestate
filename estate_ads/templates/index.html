@@ -60,5 +60,16 @@
         {% endfor %}
         </div>
     </div>
+    <div class="row text-center">
+        <ul class="pagination">
+            {% if ads.has_previous %}
+                <li><a href="{% append_to_get p=ads.previous_page_number %}">&laquo;</a></li>
+            {% endif %}
+            <li><a href="#">{{ ads.number }} od {{ ads.paginator.num_pages }}</a></li>
+            {% if ads.has_next %}
+                <li><a href="{% append_to_get p=ads.next_page_number %}">&raquo;</a></li>
+            {% endif %}
+        </ul>
+    </div>
 
 {% endblock %}
