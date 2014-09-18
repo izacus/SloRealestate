@@ -1,37 +1,38 @@
+# coding=utf-8
 from django.db import models
 
 REGIONS = (
-    (1, "LJ_OKOLICA"),
-    (2, "J_PRIMORSKA"),
-    (3, "GORENJSKA"),
-    (4, "S_PRIMORSKA"),
-    (5, "SAVINJSKA"),
-    (6, "DOLENJSKA"),
+    (1, "Ljubljana - okolica"),
+    (2, "Južna primorska"),
+    (3, "Gorenjska"),
+    (4, "Severna primorska"),
+    (5, "Savinjska"),
+    (6, "Dolenjska"),
     # 7 - Prazno?!
-    (8, "NOTRANJSKA"),
-    (9, "PODRAVSKA"),
-    (10, "KOROSKA"),
-    (11, "ZASAVSKA"),
-    (12, "POSAVSKA"),
+    (8, "Notranjska"),
+    (9, "Podravska"),
+    (10, "Koroška"),
+    (11, "Zasavska"),
+    (12, "Posavska"),
     # 13 - VSI KRAJI
-    (14, "LJ_MESTO"),
-    (15, "POMURSKA")
+    (14, "Ljubljana - mesto"),
+    (15, "Pomurska")
 )
 
 AD_TYPES = (
-    (0, "PRODAJA"),
-    (1, "NAKUP"),
-    (2, "ODDAJA"),
-    (3, "NAJEM")
+    (0, "Prodaja"),
+    (1, "Nakup"),
+    (2, "Oddaja"),
+    (3, "Najem")
 )
 
 BUILDING_TYPES = (
-    (0, "STANOVANJE"),
-    (1, "HISA"),
-    (2, "POSEST"),
-    (3, "POSLOVNI_PROSTOR"),
-    (4, "GARAZA"),
-    (5, "VIKEND")
+    (0, "Stanovanje"),
+    (1, "Hiša"),
+    (2, "Posest"),
+    (3, "Poslovni prostor"),
+    (4, "Garaža"),
+    (5, "Vikend")
 )
 
 

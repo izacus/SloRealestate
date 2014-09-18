@@ -57,6 +57,9 @@ TEMPLATE_LOADERS = (
     'django.template.loaders.app_directories.Loader',
 )
 
+from django.conf.global_settings import TEMPLATE_CONTEXT_PROCESSORS
+TEMPLATE_CONTEXT_PROCESSORS += ("django.core.context_processors.request",)
+
 ROOT_URLCONF = 'si_estate.urls'
 
 WSGI_APPLICATION = 'si_estate.wsgi.application'

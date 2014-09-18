@@ -1,29 +1,64 @@
 {% extends 'base.html' %}
 {% load humanize %}
+{% load append_to_get %}
 {% block content %}
+    <div class="row">
+        <div class="col-md-2">
+            <h5>Vrste oglasov:</h5>
+            <ul>
+                {% for idx, type in ad_types %}
+                    <li>
+                        {% ifnotequal t idx %} <a href="{% append_to_get t=idx %}"> {% endifnotequal %}
+                            {{ type }}
+                        {% ifnotequal t idx %}</a>{% endifnotequal %}
+                    </li>
 
-        <h2>Oglasi</h2> <br/>
-
+                {% endfor %}
+            </ul>
+            <h5>Regije:</h5>
+            <ul>
+                {% for idx, region in regions %}
+                    <li>
+                        {% ifnotequal r idx %} <a href="{% append_to_get r=idx %}"> {% endifnotequal %}
+                        {{ region }}
+                        {% ifnotequal r idx %}</a>{% endifnotequal %}
+                    </li>
+                {% endfor %}
+            </ul>
+            <h5>Vrsta zgradbe:</h5>
+            <ul>
+                {% for idx, building in building_types %}
+                    <li>
+                        {% ifnotequal b idx %} <a href="{% append_to_get b=idx %}"> {% endifnotequal %}
+                        {{ building }}
+                        {% ifnotequal b idx %}</a>{% endifnotequal %}
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+        <div class="col-md-10">
         {% for ad in ads %}
-            <h4 class=".row">{{ ad.title }}</h4>
-            <div class=".row">
+            <h4><a href="http://www.nepremicnine.net/nepremicnine.html?id={{ ad.ad_id|slice:"1:" }}">{{ ad.title }}</a></h4>
+            <div>
                 <span class="label label-danger">{{ ad.size_m2 }} m2</span>
                 <span class="label label-primary">{{ ad.price|intcomma }} EUR</span>
                 <span class="label label-info">{{ ad.year_built|default_if_none:'' }}</span>
                 <span class="label label-success">{{ ad.administrative_unit }}</span>
             </div>
             <br />
-            <p class=".row lead">{{ ad.short_description }}</p>
-            <p class=".row .col-md-12">{{ ad.description }}</p>
+            <p class="lead">{{ ad.short_description }}</p>
+            <p>{{ ad.description }}</p>
 
-            <div class=".row"
+            <div
             {% for picture in ad.adpicture_set.all %}
                 <a href="{{ picture.picture_url }}" target="_blank"><img class="img-responsive img-thumbnail" style="width: 180px;" src="{{ picture.picture_url }}" /></a>
             {% endfor %}
             </div>
             <br />
-            <div class=".row"><h6>{{ ad.author_name }}</h6></div>
+            <div><h6>{{ ad.author_name }}</h6></div>
             <hr />
         {% endfor %}
+        </div>
+    </div>
 
 {% endblock %}
