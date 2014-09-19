@@ -28,6 +28,12 @@ def index_view(request):
         building = int(request.GET.get("b"))
         ads_query = ads_query.filter(building_type=building)
 
+    if request.GET.get("mxa") is not None:
+        ads_query = ads_query.filter(size_m2__lte=int(request.GET.get("mxa")))
+
+    if request.GET.get("mna") is not None:
+        ads_query = ads_query.filter(size_m2__gte=int(request.GET.get("mna")))
+
     ads_query = ads_query.order_by('price_m2', 'year_built', 'publish_date')
     ads = ads_query.all()
 
