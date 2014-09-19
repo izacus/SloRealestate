@@ -1,6 +1,12 @@
 {% extends 'base.html' %}
 {% load humanize %}
 {% load append_to_get %}
+
+{% block html_head %}
+    <link rel="stylesheet" href="//rawgithub.com/ashleydw/lightbox/master/dist/ekko-lightbox.css" type="text/css" />
+    <script language="javascript" src="//rawgithub.com/ashleydw/lightbox/master/dist/ekko-lightbox.js"></script>
+{% endblock %}
+
 {% block content %}
     <div class="row">
         <div class="col-md-2">
@@ -43,15 +49,15 @@
                 <span class="label label-danger">{{ ad.size_m2 }} m2</span>
                 <span class="label label-primary">{{ ad.price|intcomma }} EUR</span>
                 <span class="label label-info">{{ ad.year_built|default_if_none:'' }}</span>
-                <span class="label label-success">{{ ad.administrative_unit }}</span>
+                <span class="label label-success">{{ ad.county }} / {{ ad.administrative_unit }}</span>
             </div>
             <br />
-            <p class="lead">{{ ad.short_description }}</p>
+            <h5>{{ ad.short_description }}</h5>
             <p>{{ ad.description }}</p>
 
-            <div
+            <div class="row">
             {% for picture in ad.adpicture_set.all %}
-                <a href="{{ picture.picture_url }}" target="_blank"><img class="img-responsive img-thumbnail" style="width: 180px;" src="{{ picture.picture_url }}" /></a>
+                <a href="{{ picture.picture_url }}" data-toggle="lightbox" data-gallery="{{ ad.ad_id }}" data-title="{{ ad.title }}" data-footer="{{ ad.short_description }}"><img class="img-responsive img-thumbnail" style="width: 180px;" src="{{ picture.picture_url }}" /></a>
             {% endfor %}
             </div>
             <br />
@@ -71,5 +77,12 @@
             {% endif %}
         </ul>
     </div>
+
+    <script type="text/javascript">
+        $(document).delegate('*[data-toggle="lightbox"]', 'click', function(event) {
+            event.preventDefault();
+            $(this).ekkoLightbox();
+        });
+    </script>
 
 {% endblock %}
