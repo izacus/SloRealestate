@@ -34,7 +34,7 @@ def index_view(request):
     if request.GET.get("mna") is not None:
         ads_query = ads_query.filter(size_m2__gte=int(request.GET.get("mna")))
 
-    ads_query = ads_query.order_by('price_m2', 'year_built', 'publish_date')
+    ads_query = ads_query.order_by('-publish_date', 'size_m2', 'year_built')
     ads = ads_query.all()
 
     paginator = Paginator(ads, 20)
