@@ -11,7 +11,6 @@ def index_view(request):
     start_week = date - datetime.timedelta(date.weekday())
     end_week = start_week + datetime.timedelta(7)
 
-    ads_query = EstateAd.objects.filter(publish_date__range=[start_week, end_week])
 
     type = None
     if request.GET.get("t") is not None:
@@ -34,7 +33,7 @@ def index_view(request):
     if request.GET.get("mna") is not None:
         ads_query = ads_query.filter(size_m2__gte=int(request.GET.get("mna")))
 
-    ads_query = ads_query.order_by('-publish_date', 'size_m2', 'year_built')
+    ads_query = EstateAd.objects.order_by('-publish_date', 'size_m2', 'year_built')
     ads = ads_query.all()
 
     paginator = Paginator(ads, 20)
