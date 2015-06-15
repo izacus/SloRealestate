@@ -58,7 +58,7 @@ class EstateAd(models.Model):
     price_m2 = models.FloatField(null=True)
     price = models.FloatField(null=True)
     year_built = models.IntegerField(null=True)
-    floor = models.CharField(max_length=8, blank=True, null=False, default="")
+    floor = models.CharField(max_length=32, blank=True, null=False, default="")
 
     # Additional information
     description = models.TextField(blank=True, null=False, default="")
