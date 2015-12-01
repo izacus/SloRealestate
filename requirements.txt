@@ -6,3 +6,4 @@ requests==2.3.0
 requests-cache==0.4.5
 wsgiref==0.1.2
 django-bootstrap3
+pyquery==1.2.9

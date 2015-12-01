@@ -1,7 +1,6 @@
-from lxml import etree
 from estate_ads.models import EstateAd, AdPicture
 from estate_ads.utils import get_site
-
+from pyquery import PyQuery as pq
 
 def read_ad_details(ad_id):
     ad = EstateAd.objects.get(pk=ad_id)
@@ -11,9 +10,9 @@ def read_ad_details(ad_id):
 
     print "-- Detail: " + ad.link
     ad_html = get_site(ad.link)
-    tree = etree.fromstring(ad_html, etree.HTMLParser())
+    tree = pq(ad_html)
 
-    gallery_links = tree.xpath('//div[@id="galerija"]/a')
+    gallery_links = tree.find('#galerija a')
     for link in gallery_links:
         try:
             image = AdPicture(picture_url=link.attrib["href"])
@@ -22,10 +21,10 @@ def read_ad_details(ad_id):
         except KeyError:    # Missing href
             continue
 
-    ad.description = "\n".join(tree.xpath('//div[@class="web-opis"]//text()'))
+    ad.description = tree.find('.web-opis').text()
 
     try:
-        ad.administrative_unit = tree.xpath('//div[@class="main-data"]/table/tr')[3].getchildren()[1].text
+        ad.administrative_unit = tree.find('.more_info').text().split(' | ')[3].lstrip('Upravna enota:').strip()
     except IndexError:
         pass
 
@@ -33,7 +32,7 @@ def read_ad_details(ad_id):
         ad.administrative_unit = ""
 
     try:
-        ad.county = tree.xpath('//div[@class="main-data"]/table/tr')[4].getchildren()[1].text
+        ad.county = tree.find('.more_info').text().split(' | ')[4].lstrip(u'Ob\u010dina:').strip()
     except IndexError:
         pass
 
