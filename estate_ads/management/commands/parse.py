@@ -151,6 +151,8 @@ class Command(BaseCommand):
                         value = data_span.text
                         raw_data[name] = value
 
+                    raw_data['posr'] = doc.find('.posr').remove('.new-label').text()
+
                     raw_attributes = doc.find('.atributi span')
                     for raw_attribute in raw_attributes:
                         name = raw_attribute.text[:raw_attribute.text.find(':')].lower()
