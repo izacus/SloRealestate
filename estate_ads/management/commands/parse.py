@@ -2,11 +2,12 @@
 
 from Queue import Queue
 import json
+from pyquery import PyQuery as pq
 from django.core.management import BaseCommand
 from django.db import IntegrityError
 from django.utils import timezone
 from lxml import etree
-from estate_ads.models import EstateAd, AdPicture
+from estate_ads.models import EstateAd
 from estate_ads.models import REGIONS
 from estate_ads.models import AD_TYPES
 from estate_ads.models import BUILDING_TYPES
@@ -125,10 +126,12 @@ class Command(BaseCommand):
                 url = parse_queue.get()
                 print "Parsing " + url
                 site_html = get_site(url)
-                tree = etree.fromstring(site_html, etree.HTMLParser())
+                tree = pq(site_html)
 
-                raw_ads = tree.xpath('//body/div/div/div[@id="content"]//div[@class="oglas_container"]')
+                raw_ads = tree('.oglas_container')
+
                 for raw_ad in raw_ads:
+                    doc = pq(raw_ad)
                     ad_id = raw_ad.attrib["id"]
                     if EstateAd.objects.filter(ad_id=ad_id).exists():
                         continue
@@ -137,10 +140,10 @@ class Command(BaseCommand):
                     ad.region = region_num
                     ad.publish_date = timezone.now()    # We're parsing last 24 hours so set publish date to now
                     ad.ad_id = ad_id
-                    ad.title = raw_ad.xpath('div[@class="teksti_container"]/h2/a')[0].text
-                    ad.link = BASE_URL + raw_ad.xpath('div[@class="teksti_container"]/h2/a')[0].attrib["href"]
+                    ad.title = doc.find('h2 a .title').text()
+                    ad.link = BASE_URL + doc.find('h2 a')[0].attrib["href"]
 
-                    data = raw_ad.xpath('div[@class="teksti_container"]/div[@class="main-data"]/span')
+                    data = doc.find('.main-data span')
 
                     raw_data = {}
                     for data_span in data:
@@ -148,7 +151,7 @@ class Command(BaseCommand):
                         value = data_span.text
                         raw_data[name] = value
 
-                    raw_attributes = raw_ad.xpath('div[@class="teksti_container"]/div[@class="atributi"]/span')
+                    raw_attributes = doc.find('.atributi span')
                     for raw_attribute in raw_attributes:
                         name = raw_attribute.text[:raw_attribute.text.find(':')].lower()
                         value = raw_attribute.find("strong").text
@@ -162,8 +165,8 @@ class Command(BaseCommand):
                     ad.year_built = self.parse_year(raw_data)
                     ad.floor = raw_data.get("nadstropje", "")
 
-                    ad.short_description = raw_ad.xpath('div[@class="teksti_container"]/div[@class="kratek"]')[0].text
-                    ad.author_name = raw_ad.xpath('div[@class="teksti_container"]/div[@class="povezave"]/div')[0].attrib["title"]
+                    ad.short_description = doc.find('.kratek')[0].text
+                    ad.author_name = doc.find('.povezave div')[0].attrib["title"]
                     ad.raw_html = etree.tostring(raw_ad)
 
                     try:
@@ -176,7 +179,7 @@ class Command(BaseCommand):
 
                 # Grab next page link
                 try:
-                    next_page_link = BASE_URL + tree.xpath('//div[@id="pagination" and @class="fr"]/ul/li/a[@class="next"]')[0].attrib["href"]
+                    next_page_link = BASE_URL + tree.find('#pagination .next')[0].attrib["href"]
                     parse_queue.put(next_page_link)
                 except:
                     pass
