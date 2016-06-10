@@ -16,7 +16,11 @@
 {% block content %}
     <div class="row">
         <div class="col-md-2">
-            <h5>Vrste oglasov:</h5>
+          <h5>Omeji lokacije na:</h5>
+            <form action="." method="GET">
+              <input type="text" name="locations" value="{{ locations }}" />
+            </form>
+          <h5>Vrste oglasov:</h5>
             <ul>
                 {% for idx, type in ad_types %}
                     <li>
