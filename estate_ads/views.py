@@ -1,6 +1,9 @@
 import datetime
+import operator
+
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.shortcuts import render
+from django.db.models import Q
 
 # Create your views here.
 from models import EstateAd, AD_TYPES, REGIONS, BUILDING_TYPES
@@ -33,6 +36,13 @@ def index_view(request):
     if request.GET.get("mna") is not None:
         ads_query = ads_query.filter(size_m2__gte=int(request.GET.get("mna")))
 
+    search_locations = request.GET.get("locations", None)
+    if search_locations:
+        locations = [loc.strip() for loc in search_locations.split(",")]
+        query = [Q(title__icontains=loc) | Q(description__icontains=loc)
+                 for loc in locations]
+        ads_query = ads_query.filter(reduce(operator.or_, query))
+
     ads_query = ads_query.order_by('-publish_date', 'size_m2', 'year_built')
     ads = ads_query.all()
 
@@ -51,4 +61,6 @@ def index_view(request):
                                            "building_types": BUILDING_TYPES,
                                            "t": type,
                                            "r": region,
-                                           "b": building })
+                                           "b": building,
+                                           "locations": search_locations
+                                           })
