@@ -1,0 +1,14 @@
+appdirs==1.4.0
+contextlib2==0.5.4
+cssselect==1.0.1
+Django==1.10.5
+django-bootstrap3==8.1.0
+lxml==3.7.2
+packaging==16.8
+psycopg2==2.6.2
+pyparsing==2.1.10
+pyquery==1.2.17
+raven==5.32.0
+requests==2.13.0
+requests-cache==0.4.13
+six==1.10.0
