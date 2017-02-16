@@ -6,7 +6,7 @@ from django.shortcuts import render
 from django.db.models import Q
 
 # Create your views here.
-from models import EstateAd, AD_TYPES, REGIONS, BUILDING_TYPES
+from estate_ads.models import AD_TYPES, REGIONS, BUILDING_TYPES, EstateAd
 
 
 def index_view(request):

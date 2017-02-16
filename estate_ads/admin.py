@@ -1,5 +1,6 @@
 from django.contrib import admin
-from models import EstateAd, AdPicture
+
+from estate_ads.models import EstateAd, AdPicture
 
 
 class EstateAdAdmin(admin.ModelAdmin):

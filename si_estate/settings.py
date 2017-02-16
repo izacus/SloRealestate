@@ -26,6 +26,21 @@ TEMPLATE_DEBUG = True
 
 ALLOWED_HOSTS = []
 
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': [],
+        'APP_DIRS': True,
+        'OPTIONS': {
+            'context_processors': [
+                'django.template.context_processors.debug',
+                'django.template.context_processors.request',
+                'django.contrib.auth.context_processors.auth',
+                'django.contrib.messages.context_processors.messages',
+            ],
+        },
+    },
+]
 
 # Application definition
 
@@ -57,9 +72,6 @@ TEMPLATE_LOADERS = (
     'django.template.loaders.app_directories.Loader',
 )
 
-from django.conf.global_settings import TEMPLATE_CONTEXT_PROCESSORS
-TEMPLATE_CONTEXT_PROCESSORS += ("django.core.context_processors.request",)
-
 ROOT_URLCONF = 'si_estate.urls'
 
 WSGI_APPLICATION = 'si_estate.wsgi.application'
@@ -71,9 +83,9 @@ WSGI_APPLICATION = 'si_estate.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'nepremicnine',
-        'USER': 'nepremicnine',
-        'PASSWORD': 'nepremicnine',
+        'NAME': 'jernej',
+        'USER': 'jernej',
+        'PASSWORD': 'jernej',
         'HOST': 'localhost',
         'PORT': ''
     }

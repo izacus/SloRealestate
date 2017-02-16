@@ -1,9 +1,0 @@
-Django==1.8
-lxml==3.3.5
-psycopg2==2.5.3
-raven==4.2.3
-requests==2.3.0
-requests-cache==0.4.5
-wsgiref==0.1.2
-django-bootstrap3
-pyquery==1.2.9

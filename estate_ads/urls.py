@@ -1,8 +1,8 @@
-from django.conf.urls import patterns, url
+from django.conf.urls import url
 from django.http import HttpResponse
-import views
 
-urlpatterns = patterns('',
-    (r'^robots\.txt$', lambda r: HttpResponse("User-agent: *\nDisallow: /", content_type="text/plain")),
+from estate_ads import views
+
+urlpatterns = [
     url(r'', views.index_view),
-)
+]
