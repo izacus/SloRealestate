@@ -65,28 +65,6 @@ MIDDLEWARE_CLASSES = (
     'raven.contrib.django.raven_compat.middleware.Sentry404CatchMiddleware',
 )
 
-LOGGING = {
-    'version': 1,
-    'filters': {
-        'require_debug_true': {
-            '()': 'django.utils.log.RequireDebugTrue',
-        }
-    },
-    'handlers': {
-        'console': {
-            'level': 'DEBUG',
-            'filters': ['require_debug_true'],
-            'class': 'logging.StreamHandler',
-        }
-    },
-    'loggers': {
-        'django.db.backends': {
-            'level': 'DEBUG',
-            'handlers': ['console'],
-        }
-    }
-}
-
 ROOT_URLCONF = 'si_estate.urls'
 
 WSGI_APPLICATION = 'si_estate.wsgi.application'
