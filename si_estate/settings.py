@@ -76,9 +76,9 @@ WSGI_APPLICATION = 'si_estate.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'jernej',
-        'USER': 'jernej',
-        'PASSWORD': 'jernej',
+        'NAME': 'nepremicnine',
+        'USER': 'nepremicnine',
+        'PASSWORD': 'nepremicnine',
         'HOST': 'localhost',
         'PORT': ''
     }
