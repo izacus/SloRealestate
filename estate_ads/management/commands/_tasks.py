@@ -8,7 +8,7 @@ def read_ad_details(ad_id):
     # Now download ad
     if ad.link is None: return
 
-    print "-- Detail: " + ad.link
+    print("-- Detail: " + ad.link)
     ad_html = get_site(ad.link)
     tree = pq(ad_html)
 

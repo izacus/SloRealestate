@@ -7,6 +7,8 @@ from django.core.management import BaseCommand
 from django.db import IntegrityError
 from django.utils import timezone
 from lxml import etree
+
+from estate_ads.management.commands import _tasks
 from estate_ads.models import EstateAd
 from estate_ads.models import REGIONS
 from estate_ads.models import AD_TYPES
@@ -155,8 +157,10 @@ class Command(BaseCommand):
                     raw_attributes = doc.find('.atributi span')
                     for raw_attribute in raw_attributes:
                         name = raw_attribute.text[:raw_attribute.text.find(':')].lower()
-                        value = raw_attribute.find("strong").text
-                        raw_data[name] = value
+                        strong_container = raw_attribute.find("strong")
+                        if strong_container is not None:
+                            value = raw_attribute.find("strong").text
+                            raw_data[name] = value
 
                     ad.raw_data = json.dumps(raw_data)
                     ad.type, ad.building_type = self.parse_type(raw_data)
