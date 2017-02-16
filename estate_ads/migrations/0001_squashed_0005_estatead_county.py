@@ -29,7 +29,7 @@ class Migration(migrations.Migration):
                 ('price_m2', models.FloatField(null=True)),
                 ('price', models.FloatField(null=True)),
                 ('year_built', models.IntegerField(null=True)),
-                ('floor', models.CharField(default=b'', max_length=8, blank=True)),
+                ('floor', models.CharField(default=b'', max_length=32, blank=True)),
                 ('raw_data', models.TextField()),
                 ('raw_html', models.TextField()),
                 ('administrative_unit', models.CharField(default=b'', max_length=255, blank=True)),
