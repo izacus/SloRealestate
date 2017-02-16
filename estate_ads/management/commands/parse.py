@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from Queue import Queue
+from queue import Queue
 import json
 from pyquery import PyQuery as pq
 from django.core.management import BaseCommand
@@ -12,7 +12,6 @@ from estate_ads.models import REGIONS
 from estate_ads.models import AD_TYPES
 from estate_ads.models import BUILDING_TYPES
 
-import _tasks
 import locale
 from estate_ads.utils import get_site
 
@@ -50,7 +49,7 @@ class Command(BaseCommand):
                 ad_type = AD_TYPES[3][0]
 
             if ad_type is None:
-                print "Unknown ad type: " + ad_type_string
+                print("Unknown ad type: " + ad_type_string)
 
             building_type_string = raw_data["posr"][raw_data["posr"].find(":") + 1:].strip()
             if building_type_string == u"Stanovanje":
@@ -67,7 +66,7 @@ class Command(BaseCommand):
                 building_type = BUILDING_TYPES[5][0]
 
             if building_type is None:
-                print "Unknown building type " + building_type_string
+                print("Unknown building type " + building_type_string)
 
         return ad_type, building_type
 
@@ -76,7 +75,7 @@ class Command(BaseCommand):
             try:
                 return self.parse_float(raw_data["velikost"][:raw_data["velikost"].find("m2")]) # Ugly hack, can we parse these numbers better?
             except ValueError:
-                print "Wrong size value: " + raw_data["velikost"]
+                print("Wrong size value: " + raw_data["velikost"])
 
         return None
 
@@ -119,12 +118,12 @@ class Command(BaseCommand):
         parse_queue = Queue()
 
         for region_num, region_name in REGIONS:
-            print " == " + region_name + " == "
+            print(" == " + region_name + " == ")
             parse_queue.put(TOP_SITE_URL + "&r=" + str(region_num))
 
             while not parse_queue.empty():
                 url = parse_queue.get()
-                print "Parsing " + url
+                print("Parsing " + url)
                 site_html = get_site(url)
                 tree = pq(site_html)
 
@@ -174,8 +173,8 @@ class Command(BaseCommand):
                     try:
                         ad.save()
                     except IntegrityError as e:
-                        print e
-                        print "Ad with id %s already exists in database!" % (ad.ad_id, )
+                        print(e)
+                        print("Ad with id %s already exists in database!" % (ad.ad_id, ))
 
                     _tasks.read_ad_details(ad.pk)
 
